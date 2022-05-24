@@ -2,6 +2,9 @@ package string_sum
 
 import (
 	"errors"
+	"fmt"
+	"strconv"
+	"strings"
 )
 
 //use these errors as appropriate, wrapping them with fmt.Errorf function
@@ -22,6 +25,41 @@ var (
 //
 // Use the errors defined above as described, again wrapping into fmt.Errorf
 
+//goland:noinspection GoUnusedExportedFunction
 func StringSum(input string) (output string, err error) {
-	return "", nil
+	if input == "" || len(input) < 1 {
+		return "", errorEmptyInput
+	}
+
+	if _, err := strconv.Atoi(string(input[0])); err != nil {
+		return "", fmt.Errorf("%v: %w", errorNotTwoOperands, err)
+	}
+
+	inputSlice := splitBy(input, "-+")
+	if len(inputSlice) != 2 {
+		return "", errorNotTwoOperands
+	}
+
+	xS, yS := inputSlice[0], inputSlice[1]
+
+	x, err := strconv.Atoi(xS)
+	if err != nil {
+		return "", fmt.Errorf("%v: %w", errorEmptyInput, err)
+	}
+
+	y, err := strconv.Atoi(yS)
+	if err != nil {
+		return "", fmt.Errorf("%v: %w", errorEmptyInput, err)
+	}
+
+	result := x + y
+
+	return strconv.Itoa(result), nil
+}
+
+func splitBy(s, separates string) []string {
+	splitter := func(r rune) bool {
+		return strings.ContainsRune(separates, r)
+	}
+	return strings.FieldsFunc(s, splitter)
 }
