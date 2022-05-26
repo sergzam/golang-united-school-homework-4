@@ -2,6 +2,7 @@ package string_sum
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -27,14 +28,14 @@ var (
 //goland:noinspection GoUnusedExportedFunction
 func StringSum(input string) (output string, err error) {
 	if input == "" || len(input) < 1 {
-		return "", errorEmptyInput
+		return "", fmt.Errorf("error: %w", errorEmptyInput)
 	}
 
-	input = strings.TrimSpace(input)
+	input = strings.ReplaceAll(input, " ", "")
 
 	inputSlice := splitBy(input, "-+")
 	if len(inputSlice) != 2 {
-		return "", errorNotTwoOperands
+		return "", fmt.Errorf("error: %w", errorNotTwoOperands)
 	}
 
 	xN, yN := inputSlice[0], inputSlice[1]
