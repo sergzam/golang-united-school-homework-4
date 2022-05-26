@@ -31,25 +31,32 @@ func StringSum(input string) (output string, err error) {
 		return "", errorEmptyInput
 	}
 
-	if _, err := strconv.Atoi(string(input[0])); err != nil {
+	if _, err := strconv.Atoi(string(input[0])); err != nil && !strings.ContainsAny(input, "-+") {
 		return "", fmt.Errorf("error: %v: %w", errorNotTwoOperands, err)
 	}
 
 	inputSlice := splitBy(input, "-+")
-	if len(inputSlice) != 3 {
+	if len(inputSlice) != 2 {
 		return "", errorNotTwoOperands
 	}
 
-	xS, yS, sign := inputSlice[0], inputSlice[1], inputSlice[2]
-
-	x, err := strconv.Atoi(xS)
-	if err != nil {
-		return "", fmt.Errorf("error: %v: %w", errorEmptyInput, err)
+	xN, yN := inputSlice[0], inputSlice[1]
+	xI, yI := strings.Index(input, xN), strings.Index(input, yN)
+	if xI > 0 {
+		xN = string(input[xI-1]) + xN
+	}
+	if yI > 0 {
+		yN = string(input[yI-1]) + yN
 	}
 
-	y, err := strconv.Atoi(sign + yS)
+	x, err := strconv.Atoi(xN)
 	if err != nil {
-		return "", fmt.Errorf("error: %v: %w", errorEmptyInput, err)
+		return "", err
+	}
+
+	y, err := strconv.Atoi(yN)
+	if err != nil {
+		return "", err
 	}
 
 	result := x + y
@@ -58,16 +65,8 @@ func StringSum(input string) (output string, err error) {
 }
 
 func splitBy(s, separates string) []string {
-	var separator string
 	splitter := func(r rune) bool {
 		return strings.ContainsRune(separates, r)
 	}
-	for _, sep := range separates {
-		if strings.ContainsAny(s, string(sep)) {
-			separator = string(sep)
-		}
-	}
-	result := strings.FieldsFunc(s, splitter)
-	result = append(result, separator)
-	return result
+	return strings.FieldsFunc(s, splitter)
 }
