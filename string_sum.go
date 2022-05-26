@@ -2,7 +2,6 @@ package string_sum
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
 	"strings"
 )
@@ -31,9 +30,7 @@ func StringSum(input string) (output string, err error) {
 		return "", errorEmptyInput
 	}
 
-	if _, err := strconv.Atoi(string(input[0])); err != nil && !strings.ContainsAny(input, "-+") {
-		return "", fmt.Errorf("error: %v: %w", errorNotTwoOperands, err)
-	}
+	input = strings.TrimSpace(input)
 
 	inputSlice := splitBy(input, "-+")
 	if len(inputSlice) != 2 {
@@ -59,9 +56,7 @@ func StringSum(input string) (output string, err error) {
 		return "", err
 	}
 
-	result := x + y
-
-	return strconv.Itoa(result), nil
+	return strconv.Itoa(x + y), nil
 }
 
 func splitBy(s, separates string) []string {
