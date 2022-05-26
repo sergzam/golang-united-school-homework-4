@@ -32,24 +32,24 @@ func StringSum(input string) (output string, err error) {
 	}
 
 	if _, err := strconv.Atoi(string(input[0])); err != nil {
-		return "", fmt.Errorf("%v: %w", errorNotTwoOperands, err)
+		return "", fmt.Errorf("error: %v: %w", errorNotTwoOperands, err)
 	}
 
 	inputSlice := splitBy(input, "-+")
-	if len(inputSlice) != 2 {
+	if len(inputSlice) != 3 {
 		return "", errorNotTwoOperands
 	}
 
-	xS, yS := inputSlice[0], inputSlice[1]
+	xS, yS, sign := inputSlice[0], inputSlice[1], inputSlice[2]
 
 	x, err := strconv.Atoi(xS)
 	if err != nil {
-		return "", fmt.Errorf("%v: %w", errorEmptyInput, err)
+		return "", fmt.Errorf("error: %v: %w", errorEmptyInput, err)
 	}
 
-	y, err := strconv.Atoi(yS)
+	y, err := strconv.Atoi(sign + yS)
 	if err != nil {
-		return "", fmt.Errorf("%v: %w", errorEmptyInput, err)
+		return "", fmt.Errorf("error: %v: %w", errorEmptyInput, err)
 	}
 
 	result := x + y
@@ -58,8 +58,16 @@ func StringSum(input string) (output string, err error) {
 }
 
 func splitBy(s, separates string) []string {
+	var separator string
 	splitter := func(r rune) bool {
 		return strings.ContainsRune(separates, r)
 	}
-	return strings.FieldsFunc(s, splitter)
+	for _, sep := range separates {
+		if strings.ContainsAny(s, string(sep)) {
+			separator = string(sep)
+		}
+	}
+	result := strings.FieldsFunc(s, splitter)
+	result = append(result, separator)
+	return result
 }
