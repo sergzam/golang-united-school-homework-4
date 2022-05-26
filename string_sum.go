@@ -49,12 +49,12 @@ func StringSum(input string) (output string, err error) {
 
 	x, err := strconv.Atoi(xN)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("can't parse x: %w", err)
 	}
 
 	y, err := strconv.Atoi(yN)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("can't parse y: %w", err)
 	}
 
 	return strconv.Itoa(x + y), nil
